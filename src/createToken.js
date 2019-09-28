@@ -1,4 +1,6 @@
-import SLPSDK from 'slp-sdk'
+import SLPSDK from 'slp-sdk';
+import walletInfo from './walletInfo';
+
 const NETWORK = `mainnet`
 
 // const SLPSDK = require("../../lib/SLP")
@@ -13,18 +15,7 @@ if (NETWORK === `mainnet`)
   SLP = new SLPSDK({ restURL: `https://rest.bitcoin.com/v2/` })
 else SLP = new SLPSDK({ restURL: `https://trest.bitcoin.com/v2/` })
 
-// Open the wallet generated with create-wallet.
-let walletInfo
-try {
-  walletInfo = require(`../create-wallet/wallet.json`)
-} catch (err) {
-  console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
-  )
-  // process.exit(0)
-}
-
-export default async function createToken() {
+export default async function createToken(tokenValues) {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -57,30 +48,33 @@ export default async function createToken() {
       tokenReceiverAddress,
       batonReceiverAddress,
       bchChangeReceiverAddress,
-      decimals: 8,
-      name: "Schmeckle",
-      symbol: "SCH",
-      documentUri: "developer.bitcoin.com",
-      documentHash: null,
-      initialTokenQty: 888
+      decimals: tokenValues['decimals'],
+      name: tokenValues['name'],
+      symbol: tokenValues['symbol'],
+      documentUri: tokenValues['documentUri'],
+      documentHash: tokenValues['documentHash'],
+      initialTokenQty: tokenValues['initialTokenQty']
     }
 
     // Generate, sign, and broadcast a hex-encoded transaction for creating
     // the new token.
-    const genesisTxId = await SLP.TokenType1.create(createConfig)
+    // const genesisTxId = await SLP.TokenType1.create(createConfig)
+    const genesisTxId = 'abc'
 
-    console.log(`genesisTxID: ${util.inspect(genesisTxId)}`)
-    console.log(
-      `The genesis TxID above is used to uniquely identify your new class of SLP token. Save it and keep it handy.`
-    )
-    console.log(` `)
-    console.log(`View this transaction on the block explorer:`)
-    if (NETWORK === `mainnet`)
-      console.log(`https://explorer.bitcoin.com/bch/tx/${genesisTxId}`)
-    else console.log(`https://explorer.bitcoin.com/tbch/tx/${genesisTxId}`)
+    return genesisTxId
+
+    // console.log(`genesisTxID: ${util.inspect(genesisTxId)}`)
+    // console.log(
+    //   `The genesis TxID above is used to uniquely identify your new class of SLP token. Save it and keep it handy.`
+    // )
+    // console.log(` `)
+    // console.log(`View this transaction on the block explorer:`)
+    // if (NETWORK === `mainnet`)
+    //   console.log(`https://explorer.bitcoin.com/bch/tx/${genesisTxId}`)
+    // else console.log(`https://explorer.bitcoin.com/tbch/tx/${genesisTxId}`)
   } catch (err) {
-    console.error(`Error in createToken: `, err)
-    console.log(`Error message: ${err.message}`)
-    throw err
+    // console.error(`Error in createToken: `, err)
+    // console.log(`Error message: ${err.message}`)
+    return err
   }
 }
