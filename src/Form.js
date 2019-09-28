@@ -51,8 +51,7 @@ class Form extends React.Component {
     return (
       [
         <div>{this.state.name} Token successfully created!</div>,
-        <a href={this.simpleLedgerExplorerUrl()}>{this.simpleLedgerExplorerUrl()}</a>,
-        <a href={this.bitcoinExplorerUrl()}>{this.bitcoinExplorerUrl()}</a>
+        <a href={this.simpleLedgerExplorerUrl()}>{this.simpleLedgerExplorerUrl()}</a>
       ]
     )
   }
