@@ -1,5 +1,6 @@
 import React from 'react';
 import createToken from './createToken';
+import mintToken from './mintToken';
 import getMintTransactions from './getMintTransactions';
 
 class Form extends React.Component {
@@ -34,7 +35,7 @@ class Form extends React.Component {
         slpAddress: data.slpAddress
       })
     }).catch((error) => {
-      debugger
+      console.log(error)
       this.setState({
         tokenCreationError: error
       })
@@ -68,6 +69,30 @@ class Form extends React.Component {
 
   render() {
     if (this.state.genesisTxId && this.state.mintTransactions) {
+      const intervalTokenAmount = this.state.intervalTokenAmount
+      const interval = this.state.interval
+      const secondsInterval = interval && interval.match(/(\d+)s/)[1] * 1000
+      if (secondsInterval) {
+        setInterval(function () {
+          mintToken(this.state.genesisTxId, intervalTokenAmount).then(() => {
+            getMintTransactions(
+              this.state.genesisTxId,
+              this.state.slpAddress
+            ).then((data) => {
+              const parsedMintingTransactions = this.parseMintingTransactions(data)
+              this.setState({
+                mintTransactions: parsedMintingTransactions
+              })
+            }).catch((error) => {
+              console.log(error)
+              this.setState({
+                tokenHistoryError: error
+              })
+            })
+          })
+
+        }.bind(this), secondsInterval);
+      }
       return this.tokenLinksAndMintTransactions()
     } else if (this.state.genesisTxId) {
       console.log('genesisTxId', this.state.genesisTxId)
@@ -82,6 +107,7 @@ class Form extends React.Component {
           mintTransactions: parsedMintingTransactions
         })
       }).catch((error) => {
+        console.log(error)
         this.setState({
           tokenHistoryError: error
         })
