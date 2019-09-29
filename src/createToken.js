@@ -59,9 +59,12 @@ export default async function createToken(tokenValues) {
     // Generate, sign, and broadcast a hex-encoded transaction for creating
     // the new token.
     // const genesisTxId = await SLP.TokenType1.create(createConfig)
-    const genesisTxId = 'abc'
+    const genesisTxId = 'd37c3c09d791d45b2fc778e723f068aa7ba3c6eb4eaaf34bb1a1cfdc3619903e'
 
-    return genesisTxId
+    return {
+      genesisTxId: genesisTxId,
+      slpAddress: slpAddress
+    }
 
     // console.log(`genesisTxID: ${util.inspect(genesisTxId)}`)
     // console.log(
